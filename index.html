@@ -1,9 +1,480 @@
-<!doctype html>
-<html>
-  <head>
-    <title>This is the title of the webpage!</title>
-  </head>
-  <body>
-    <p>This is an example paragraph. Anything in the <strong>body</strong> tag will appear on the page, just like this <strong>p</strong> tag and its contents.</p>
-  </body>
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hunter Stephenson — Interactive Systems & Design Engineer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'base-white': '#F5F5F7',
+                        'theme-p1': '#1C2541',
+                        'theme-p2': '#0B3C5D',
+                        'theme-p3': '#2E1C2B',
+                        'theme-p4': '#1A1D20',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar and background color transition setup */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F5F7;
+            transition: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), color 0.5s ease;
+            color: #1d1d1f;
+        }
+
+        /* Full page scroll snap container for crisp vertical pagination */
+        .snap-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+
+        .snap-section {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            min-height: 100vh;
+        }
+
+        /* Smooth dynamic theme color classes */
+        body.theme-hero { background-color: #F5F5F7; color: #1d1d1f; }
+        body.theme-p1 { background-color: #1C2541; color: #F5F5F7; }
+        body.theme-p2 { background-color: #0B3C5D; color: #F5F5F7; }
+        body.theme-p3 { background-color: #2E1C2B; color: #F5F5F7; }
+        body.theme-p4 { background-color: #1A1D20; color: #F5F5F7; }
+
+        /* Dynamic nav text color inversion */
+        body.theme-hero .nav-text { color: #1d1d1f; }
+        body.theme-hero .nav-bg { background-color: rgba(255, 255, 255, 0.7); border-color: rgba(0,0,0,0.1); }
+        body.theme-hero .card-bg { background-color: rgba(255, 255, 255, 0.85); color: #1d1d1f; border: 1px solid rgba(0,0,0,0.08); }
+
+        body:not(.theme-hero) .nav-text { color: #FFFFFF; }
+        body:not(.theme-hero) .nav-bg { background-color: rgba(20, 20, 30, 0.6); border-color: rgba(255,255,255,0.15); }
+        body:not(.theme-hero) .card-bg { background-color: rgba(255, 255, 255, 0.08); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.15); backdrop-filter: blur(12px); }
+
+        /* Custom scrollbar hiding for clean presentation */
+        .snap-container::-webkit-scrollbar {
+            display: none;
+        }
+        .snap-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="theme-hero antialiased selection:bg-red-500 selection:text-white">
+
+    <!-- FIXED TOP BAR / BRAND MARK HEADER -->
+    <header class="fixed top-0 left-0 w-full z-50 px-6 md:px-12 py-6 pointer-events-none transition-colors duration-500">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            
+            <!-- Logo / Brand Mark (Top Left) -->
+            <a href="#hero" class="pointer-events-auto flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center text-white font-black tracking-wider text-xl shadow-lg transition-transform transform group-hover:scale-105">
+                    H
+                </div>
+                <div class="flex flex-col">
+                    <span class="nav-text font-bold text-base md:text-lg tracking-tight transition-colors duration-500">Hunter Stephenson</span>
+                    <span class="text-xs opacity-75 nav-text font-medium transition-colors duration-500">Interactive Systems Engineer</span>
+                </div>
+            </a>
+
+            <!-- Quick Navigation Pills (Top Right) -->
+            <nav class="pointer-events-auto hidden md:flex items-center gap-1 px-4 py-2 rounded-full nav-bg backdrop-blur-md shadow-sm transition-all duration-500">
+                <a href="#hero" class="nav-text text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-white/20 transition">Intro</a>
+                <a href="#project-1" class="nav-text text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-white/20 transition">01 Diagnostic App</a>
+                <a href="#project-2" class="nav-text text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-white/20 transition">02 FirstBuild Hack</a>
+                <a href="#project-3" class="nav-text text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-white/20 transition">03 Workflow Engine</a>
+                <a href="#project-4" class="nav-text text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-white/20 transition">04 Media & Video</a>
+                <a href="#contact" class="nav-text text-xs font-semibold px-3 py-1.5 rounded-full bg-red-600 text-white hover:bg-red-700 transition ml-2">Contact</a>
+            </nav>
+
+            <!-- Mobile Navigation Dot Indicators -->
+            <div class="pointer-events-auto md:hidden flex flex-col gap-2 bg-black/20 p-2 rounded-full backdrop-blur-md">
+                <a href="#hero" class="w-2.5 h-2.5 rounded-full bg-white opacity-80" title="Hero"></a>
+                <a href="#project-1" class="w-2.5 h-2.5 rounded-full bg-white opacity-40" title="Project 1"></a>
+                <a href="#project-2" class="w-2.5 h-2.5 rounded-full bg-white opacity-40" title="Project 2"></a>
+                <a href="#project-3" class="w-2.5 h-2.5 rounded-full bg-white opacity-40" title="Project 3"></a>
+                <a href="#project-4" class="w-2.5 h-2.5 rounded-full bg-white opacity-40" title="Project 4"></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN SNAP SCROLL CONTAINER -->
+    <main class="snap-container">
+
+        <!-- SECTION 0: HERO (BASELINE OFF-WHITE #F5F5F7) -->
+        <section id="hero" data-theme="theme-hero" class="snap-section flex flex-col justify-center px-6 md:px-12 pt-24 pb-12 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-100 text-red-700 text-xs font-semibold tracking-wide uppercase">
+                        <span class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+                        Seeking Senior Interactive Systems Roles
+                    </div>
+
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-gray-900">
+                        Bridging Physical Hardware & Digital Play Systems.
+                    </h1>
+
+                    <p class="text-lg sm:text-xl text-gray-600 max-w-2xl font-normal leading-relaxed">
+                        10 years of mechanical engineering, mobile UI/UX strategy, and rapid prototyping experience. Turning complex physical-digital logic into intuitive, delightful user experiences.
+                    </p>
+
+                    <!-- Tags -->
+                    <div class="flex flex-wrap gap-2 pt-2">
+                        <span class="px-3 py-1 rounded-lg bg-gray-200 text-gray-800 text-xs font-medium">Systems Design</span>
+                        <span class="px-3 py-1 rounded-lg bg-gray-200 text-gray-800 text-xs font-medium">Physical & Digital Play</span>
+                        <span class="px-3 py-1 rounded-lg bg-gray-200 text-gray-800 text-xs font-medium">CSWP SolidWorks</span>
+                        <span class="px-3 py-1 rounded-lg bg-gray-200 text-gray-800 text-xs font-medium">Figma & Blender</span>
+                        <span class="px-3 py-1 rounded-lg bg-gray-200 text-gray-800 text-xs font-medium">Agile Prototyping</span>
+                    </div>
+
+                    <!-- Call to Action Buttons -->
+                    <div class="flex flex-wrap items-center gap-4 pt-4">
+                        <a href="#project-1" class="px-6 py-3.5 rounded-xl bg-gray-900 text-white font-semibold text-sm hover:bg-red-600 transition shadow-md flex items-center gap-2">
+                            Explore Projects
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                        </a>
+                        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="px-6 py-3.5 rounded-xl bg-white border border-gray-300 text-gray-800 font-semibold text-sm hover:bg-gray-50 transition flex items-center gap-2">
+                            GitHub Profile
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Interactive Hero Model Placeholder -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="w-full max-w-md aspect-square rounded-3xl bg-gray-200 border-2 border-dashed border-gray-400 flex flex-col items-center justify-center p-8 text-center shadow-inner group hover:border-red-500 transition">
+                        <svg class="w-16 h-16 text-gray-400 mb-4 group-hover:text-red-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                        <span class="text-sm font-bold text-gray-700">Hero Render / Interactive Model</span>
+                        <span class="text-xs text-gray-500 mt-1">Upload 3D Blender Render or hero interaction graphic here</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 1: PROJECT 1 (THEME SLATE BLUE #1C2541) -->
+        <section id="project-1" data-theme="theme-p1" class="snap-section flex flex-col justify-center px-6 md:px-12 py-20 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                
+                <div class="lg:col-span-5 space-y-5">
+                    <div class="text-xs font-extrabold tracking-widest text-blue-400 uppercase">Case Study 01 / Physical + Digital UI</div>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">LINAK Mobile Diagnostic Ecosystem</h2>
+                    <p class="text-sm sm:text-base opacity-90 leading-relaxed">
+                        Spearheaded end-to-end UX/UI strategy for an industry-leading iOS/Android diagnostic mobile app. Connected complex actuator motion hardware with mobile Bluetooth diagnostics, transitioning the business model to SaaS.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-4 py-2">
+                        <div class="p-3 rounded-xl bg-white/10 border border-white/10">
+                            <span class="block text-2xl font-black text-blue-300">100%</span>
+                            <span class="text-xs opacity-80">Hardware-App Sync</span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-white/10 border border-white/10">
+                            <span class="block text-2xl font-black text-blue-300">SaaS</span>
+                            <span class="text-xs opacity-80">Model Transition</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2.5 py-1 rounded bg-white/10 font-medium">Figma UI/UX</span>
+                        <span class="px-2.5 py-1 rounded bg-white/10 font-medium">BLE Communication</span>
+                        <span class="px-2.5 py-1 rounded bg-white/10 font-medium">Systems Architecture</span>
+                    </div>
+
+                    <button onclick="openModal('modal-1')" class="px-5 py-2.5 rounded-xl bg-blue-500 text-white font-semibold text-xs hover:bg-blue-600 transition shadow">
+                        Inspect System Architecture & Specs →
+                    </button>
+                </div>
+
+                <!-- Image Placeholders Grid for Project 1 -->
+                <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="aspect-video sm:aspect-square rounded-2xl border-2 border-dashed border-white/30 bg-black/20 flex flex-col items-center justify-center p-6 text-center hover:border-blue-400 transition">
+                        <svg class="w-12 h-12 text-white/40 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                        <span class="text-xs font-bold">Figma App Wireframes & UI</span>
+                        <span class="text-[10px] opacity-60 mt-1">Upload iOS/Android Screen Screenshots</span>
+                    </div>
+                    <div class="aspect-video sm:aspect-square rounded-2xl border-2 border-dashed border-white/30 bg-black/20 flex flex-col items-center justify-center p-6 text-center hover:border-blue-400 transition">
+                        <svg class="w-12 h-12 text-white/40 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span class="text-xs font-bold">Hardware Flow Architecture</span>
+                        <span class="text-[10px] opacity-60 mt-1">Upload Actuator System Flow Diagram</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 2: PROJECT 2 (THEME FOREST TEAL #0B3C5D) -->
+        <section id="project-2" data-theme="theme-p2" class="snap-section flex flex-col justify-center px-6 md:px-12 py-20 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                
+                <div class="lg:col-span-5 space-y-5">
+                    <div class="text-xs font-extrabold tracking-widest text-teal-300 uppercase">Case Study 02 / Rapid Prototyping</div>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">GE FirstBuild Hackathon Winner</h2>
+                    <p class="text-sm sm:text-base opacity-90 leading-relaxed">
+                        Designed, modeled, and prototyped a functional hardware interactive mechanism in under 48 hours. Secured 1st/2nd place finishes globally by combining CAD ergonomics with physical sensors and microcontrollers.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-4 py-2">
+                        <div class="p-3 rounded-xl bg-white/10 border border-white/10">
+                            <span class="block text-2xl font-black text-teal-300">1st Place</span>
+                            <span class="text-xs opacity-80">Global/State Award</span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-white/10 border border-white/10">
+                            <span class="block text-2xl font-black text-teal-300">48 Hours</span>
+                            <span class="text-xs opacity-80">Concept to Functional Build</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2.5 py-1 rounded bg-white/10 font-medium">CSWP SolidWorks</span>
+                        <span class="px-2.5 py-1 rounded bg-white/10 font-medium">Blender Renders</span>
+                        <span class="px-2.5 py-1 rounded bg-white/10 font-medium">Arduino / Microcontrollers</span>
+                    </div>
+
+                    <button onclick="openModal('modal-2')" class="px-5 py-2.5 rounded-xl bg-teal-500 text-white font-semibold text-xs hover:bg-teal-600 transition shadow">
+                        View Rapid Build Breakdown →
+                    </button>
+                </div>
+
+                <!-- Image Placeholders Grid for Project 2 -->
+                <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="aspect-video sm:aspect-square rounded-2xl border-2 border-dashed border-white/30 bg-black/20 flex flex-col items-center justify-center p-6 text-center hover:border-teal-400 transition">
+                        <svg class="w-12 h-12 text-white/40 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        <span class="text-xs font-bold">CAD CAD/SolidWorks Model</span>
+                        <span class="text-[10px] opacity-60 mt-1">Upload 3D CAD Assembly Screenshot</span>
+                    </div>
+                    <div class="aspect-video sm:aspect-square rounded-2xl border-2 border-dashed border-white/30 bg-black/20 flex flex-col items-center justify-center p-6 text-center hover:border-teal-400 transition">
+                        <svg class="w-12 h-12 text-white/40 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
+                        <span class="text-xs font-bold">Blender CMF Render / Prototype</span>
+                        <span class="text-[10px] opacity-60 mt-1">Upload Photorealistic Product Render</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 3: PROJECT 3 (THEME WARM PLUM #2E1C2B) -->
+        <section id="project-3" data-theme="theme-p3" class="snap-section flex flex-col justify-center px-6 md:px-12 py-20 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                
+                <div class="lg:col-span-5 space-y-5">
+                    <div class="text-xs font-extrabold tracking-widest text-pink-300 uppercase">Case Study 03 / Systems Thinking</div>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Internal Workflow Automation Engine</h2>
+                    <p class="text-sm sm:text-base opacity-90 leading-relaxed">
+                        Architected automated design documentation and quotation logic that reduced engineering prep time by 50%. Turned complex multi-variable engineering rules into an intuitive, step-by-step internal system.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-4 py-2">
+                        <div class="p-3 rounded-xl bg-white/10 border border-white/10">
+                            <span class="block text-2xl font-black text-pink-300">50%</span>
+                            <span class="text-xs opacity-80">Prep Time Saved</span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-white/10 border border-white/10">
+                            <span class="block text-2xl font-black text-pink-300">Global</span>
+                            <span class="text-xs opacity-80">Internal Adoption</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2.5 py-1 rounded bg-white/10 font-medium">Design Specs</span>
+                        <span class="px-2.5 py-1 rounded bg-white/10 font-medium">Rule-Based Systems</span>
+                        <span class="px-2.5 py-1 rounded bg-white/10 font-medium">Process Automation</span>
+                    </div>
+
+                    <button onclick="openModal('modal-3')" class="px-5 py-2.5 rounded-xl bg-pink-600 text-white font-semibold text-xs hover:bg-pink-700 transition shadow">
+                        Inspect System Flowcharts →
+                    </button>
+                </div>
+
+                <!-- Image Placeholders Grid for Project 3 -->
+                <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="aspect-video sm:aspect-square rounded-2xl border-2 border-dashed border-white/30 bg-black/20 flex flex-col items-center justify-center p-6 text-center hover:border-pink-400 transition">
+                        <svg class="w-12 h-12 text-white/40 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h6a2 2 0 012 2v2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
+                        <span class="text-xs font-bold">System Flowchart / Logic Diagram</span>
+                        <span class="text-[10px] opacity-60 mt-1">Upload Process Node Diagram</span>
+                    </div>
+                    <div class="aspect-video sm:aspect-square rounded-2xl border-2 border-dashed border-white/30 bg-black/20 flex flex-col items-center justify-center p-6 text-center hover:border-pink-400 transition">
+                        <svg class="w-12 h-12 text-white/40 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span class="text-xs font-bold">Design Specification Spec Sheet</span>
+                        <span class="text-[10px] opacity-60 mt-1">Upload Formatted Spec Sample</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 4: PROJECT 4 (THEME CHARCOAL #1A1D20) -->
+        <section id="project-4" data-theme="theme-p4" class="snap-section flex flex-col justify-center px-6 md:px-12 py-20 max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                
+                <div class="lg:col-span-5 space-y-5">
+                    <div class="text-xs font-extrabold tracking-widest text-amber-400 uppercase">Case Study 04 / Media & Audio</div>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Global Educational Video Series</h2>
+                    <p class="text-sm sm:text-base opacity-90 leading-relaxed">
+                        Wrote, directed, performed in, and edited a series of engineering educational videos used globally for brand marketing and stakeholder training. Blended technical depth with creative audio-visual storytelling.
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-4 py-2">
+                        <div class="p-3 rounded-xl bg-white/10 border border-white/10">
+                            <span class="block text-2xl font-black text-amber-400">Global</span>
+                            <span class="text-xs opacity-80">Marketing Distribution</span>
+                        </div>
+                        <div class="p-3 rounded-xl bg-white/10 border border-white/10">
+                            <span class="block text-2xl font-black text-amber-400">Audio/FX</span>
+                            <span class="text-xs opacity-80">After Effects & Motion Design</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 text-xs">
+                        <span class="px-2.5 py-1 rounded bg-white/10 font-medium">Video Production</span>
+                        <span class="px-2.5 py-1 rounded bg-white/10 font-medium">After Effects</span>
+                        <span class="px-2.5 py-1 rounded bg-white/10 font-medium">Audio Editing</span>
+                    </div>
+
+                    <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="inline-block px-5 py-2.5 rounded-xl bg-amber-500 text-gray-950 font-semibold text-xs hover:bg-amber-400 transition shadow">
+                        Watch Featured Video Demo ↗
+                    </a>
+                </div>
+
+                <!-- Image Placeholders Grid for Project 4 -->
+                <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="aspect-video sm:aspect-square rounded-2xl border-2 border-dashed border-white/30 bg-black/20 flex flex-col items-center justify-center p-6 text-center hover:border-amber-400 transition">
+                        <svg class="w-12 h-12 text-white/40 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        <span class="text-xs font-bold">Video Thumbnail / Storyboard</span>
+                        <span class="text-[10px] opacity-60 mt-1">Upload Still Image / Motion Graphic</span>
+                    </div>
+                    <div class="aspect-video sm:aspect-square rounded-2xl border-2 border-dashed border-white/30 bg-black/20 flex flex-col items-center justify-center p-6 text-center hover:border-amber-400 transition">
+                        <svg class="w-12 h-12 text-white/40 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                        <span class="text-xs font-bold">Audio & FX Synthesis Waveform</span>
+                        <span class="text-[10px] opacity-60 mt-1">Upload Sound / Edit Timeline Screenshot</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 5: CONTACT & FOOTER OVERLAY -->
+        <section id="contact" data-theme="theme-hero" class="snap-section flex flex-col justify-between px-6 md:px-12 pt-24 pb-12 max-w-7xl mx-auto">
+            <div class="my-auto space-y-8 max-w-3xl">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-100 text-red-700 text-xs font-semibold tracking-wide uppercase">
+                    Let's Connect
+                </div>
+
+                <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900">
+                    Ready to build the future of interactive play experiences in Billund.
+                </h2>
+
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    Passionate about bridging physical brick building with digital software systems, procedural sound, and behavior-driven interactions.
+                </p>
+
+                <div class="flex flex-wrap gap-4 pt-2">
+                    <a href="mailto:hunter.stephenson@example.com" class="px-6 py-3.5 rounded-xl bg-red-600 text-white font-semibold text-sm hover:bg-red-700 transition shadow">
+                        Send Email Direct
+                    </a>
+                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="px-6 py-3.5 rounded-xl bg-gray-200 text-gray-800 font-semibold text-sm hover:bg-gray-300 transition">
+                        LinkedIn Profile
+                    </a>
+                </div>
+            </div>
+
+            <!-- Footer Meta -->
+            <div class="pt-12 border-t border-gray-300 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+                <span>© 2026 Hunter Stephenson. Designed for LEGO® Systems Design Application.</span>
+                <span>Hosted on GitHub Pages (`huntercstephenson.github.io`)</span>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL POPUPS FOR DETAILED CASE STUDY BREAKDOWNS -->
+    <div id="modal-1" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-gray-900 text-white max-w-2xl w-full rounded-2xl p-6 sm:p-8 space-y-4 border border-white/20 shadow-2xl">
+            <h3 class="text-xl font-bold">LINAK Mobile UI/UX Diagnostic Architecture</h3>
+            <p class="text-sm opacity-80 leading-relaxed">
+                Detailed breakdown of physical linear actuator BLE telemetry sent directly to an iOS/Android application. Focuses on safe state feedback, user diagnostic loops, and transition to a SaaS model.
+            </p>
+            <div class="p-4 rounded-xl bg-white/5 text-xs space-y-2">
+                <span class="font-bold text-blue-400 block">NDA Safeguard Note:</span>
+                <span>All logic presented represents anonymized architectural patterns and public feature workflows.</span>
+            </div>
+            <button onclick="closeModal('modal-1')" class="px-4 py-2 rounded-lg bg-white/20 text-xs font-semibold hover:bg-white/30 transition">Close Spec</button>
+        </div>
+    </div>
+
+    <div id="modal-2" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-gray-900 text-white max-w-2xl w-full rounded-2xl p-6 sm:p-8 space-y-4 border border-white/20 shadow-2xl">
+            <h3 class="text-xl font-bold">GE FirstBuild Hackathon Mechanism</h3>
+            <p class="text-sm opacity-80 leading-relaxed">
+                48-hour sprint building physical prototype mechanisms, integrating sensors, microcontrollers, and CAD outer enclosures. Winner of 1st/2nd place finishes.
+            </p>
+            <button onclick="closeModal('modal-2')" class="px-4 py-2 rounded-lg bg-white/20 text-xs font-semibold hover:bg-white/30 transition">Close Spec</button>
+        </div>
+    </div>
+
+    <div id="modal-3" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="bg-gray-900 text-white max-w-2xl w-full rounded-2xl p-6 sm:p-8 space-y-4 border border-white/20 shadow-2xl">
+            <h3 class="text-xl font-bold">Workflow Automation & Rule-Based Logic</h3>
+            <p class="text-sm opacity-80 leading-relaxed">
+                Architected automated quotation and design spec engine reducing prep time by 50%. Built using structured logic flowcharts and automated document generation.
+            </p>
+            <button onclick="closeModal('modal-3')" class="px-4 py-2 rounded-lg bg-white/20 text-xs font-semibold hover:bg-white/30 transition">Close Spec</button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT FOR BACKGROUND FADE & MODAL HANDLERS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const sections = document.querySelectorAll('section[data-theme]');
+
+            // Setup IntersectionObserver to swap body background themes seamlessly as you scroll
+            const observerOptions = {
+                root: document.querySelector('.snap-container'),
+                threshold: 0.55 // Trigger theme change when 55% of section is visible
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const theme = entry.target.getAttribute('data-theme');
+                        // Remove all existing theme classes
+                        body.classList.remove('theme-hero', 'theme-p1', 'theme-p2', 'theme-p3', 'theme-p4');
+                        // Add active theme class
+                        body.classList.add(theme);
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => observer.observe(section));
+        });
+
+        // Modal opening / closing helpers
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+    </script>
+</body>
 </html>
