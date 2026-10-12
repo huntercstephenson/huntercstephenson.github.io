@@ -1,0 +1,170 @@
+/* =============================================================================
+   styles.css  –  custom CSS that Tailwind utilities don't cover
+   Sections:
+     1. Base / typography
+     2. Scroll-snap viewport
+     3. Header navigation helpers
+     4. Photography section (phone → Instagram grid)
+   ============================================================================= */
+
+
+/* ---------------------------------------------------------------------------
+   1. BASE / TYPOGRAPHY
+   --------------------------------------------------------------------------- */
+
+/* SF Pro system font stack + smooth background/text colour fade between sections */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+               "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  transition: background-color 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+
+/* ---------------------------------------------------------------------------
+   2. SCROLL-SNAP VIEWPORT
+   --------------------------------------------------------------------------- */
+
+/* The <main> element is the scroll container (the page itself never scrolls) */
+.snap-container {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100vh;
+}
+
+/* Each normal section is exactly one screen tall and snaps to the top */
+.snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Hide scrollbars for a clean full-page look */
+.snap-container::-webkit-scrollbar { display: none; }
+.snap-container { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* A "tall" section is longer than one screen (the extra length is the scroll
+   distance that drives the photo animation). photo-scroll.js sets the exact
+   height at runtime; 250vh is only a fallback before the script runs.
+   Because the section is taller than the viewport, browsers let you scroll
+   freely inside it instead of snapping. */
+.snap-section--tall {
+  height: 250vh;
+  scroll-snap-stop: normal;
+}
+
+
+/* ---------------------------------------------------------------------------
+   3. HEADER NAVIGATION HELPERS
+   --------------------------------------------------------------------------- */
+
+/* The pill nav fades out while the photo grid owns the right-hand column
+   (toggled by photo-scroll.js). */
+#main-nav { transition: opacity 0.3s ease; }
+#main-nav.nav-hidden { opacity: 0; pointer-events: none; }
+
+
+/* ---------------------------------------------------------------------------
+   4. PHOTOGRAPHY SECTION
+   --------------------------------------------------------------------------- */
+
+/* Easy-to-edit look of the Instagram grid */
+:root {
+  --ig-bg:  #ffffff;  /* page colour behind the grid (use #000 for IG dark mode) */
+  --ig-gap: 2px;      /* gap between thumbnails */
+}
+
+/* The stage is pinned (sticky) to the top while the long section scrolls past */
+.photo-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Overlay that covers the whole stage; holds the grid + phone.
+   JS positions things inside it using the placeholder box's coordinates.
+   pointer-events none so the text/links underneath stay clickable. */
+#photo-fx {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* The scrolling "screen". JS sizes it to the box width, and animates its
+   transform from "sheared inside the phone" to "flat, full height". */
+#photo-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  background: var(--ig-bg);
+  transform-origin: 0 0;
+  will-change: transform, clip-path;
+}
+
+/* Everything inside the layer that scrolls (profile header + thumbnails) */
+#photo-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  will-change: transform;
+}
+
+/* Profile header screenshot: fills the width, natural height, never cropped */
+#ig-header,
+.ig-header-placeholder {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Shown only if igheader.png is missing */
+.ig-header-placeholder {
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8e8e8e;
+  font-size: 14px;
+  background: #fafafa;
+}
+
+/* 3-column square grid, exactly like Instagram */
+#photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--ig-gap);
+  margin-top: var(--ig-gap);
+  background: var(--ig-bg);
+}
+#photo-grid img,
+#photo-grid .tile-placeholder {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover; /* safety net if a photo isn't exactly square */
+}
+
+/* Placeholder tiles (only shown when no numbered images are found) */
+.tile-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #efefef;
+  color: #b0b0b0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* The iPhone PNG. Position/size are set by JS from the box geometry.
+   The screen area of the PNG is transparent, so the grid shows through it. */
+#photo-phone {
+  position: absolute;
+  max-width: none;
+  user-select: none;
+  filter: drop-shadow(0 24px 32px rgba(0, 0, 0, 0.35));
+}
